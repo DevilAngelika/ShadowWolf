@@ -8,6 +8,13 @@ const client = new Client({
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
+
+    const channel = client.channels.cache.get(1354022484533317666);
+  if (channel) {
+    channel.send('Bonjour !');
+  } else {
+    console.error('Channel not found!');
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN);
