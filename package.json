@@ -4,10 +4,22 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "eslint": "^9.31.0"
+    "eslint": "^9.31.0",
+    "husky": "^9.1.7",
+    "typescript": "^5.9.2"
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node index.ts"
+    "start": "node index.ts",
+    "prepare": "husky",
+    "tsc": "tsc",
+    "format": "prettier --write ."
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run tsc --noEmit",
+      "npm run format",
+      "git add"
+    ]
   }
 }
