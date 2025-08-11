@@ -1,8 +1,9 @@
-import { EmbedBuilder } from 'discord.js';
+import { ColorResolvable, EmbedBuilder } from 'discord.js';
 
-export function createEmbed(title: string, description: string): EmbedBuilder
+export function createEmbed(title: string, description: string, color: ColorResolvable = 'Blue'): EmbedBuilder
 {
     return (new EmbedBuilder())
         .setTitle(title)
-        .setDescription(description);
+        .setDescription(description)
+        .setColor(color);
 }

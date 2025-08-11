@@ -1,6 +1,7 @@
 import { Interaction, MessageFlags } from "discord.js";
 import { sendButtons } from "./integrations/primary";
-import { createTicket } from "./helper/ticket";
+import { closeTicket, createTicket } from "./helper/ticket";
+import { config } from "./config";
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
@@ -8,17 +9,17 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log(`Logged in as ${client.user.tag}`);
 
-  const channel = client.channels.cache.get('1354022484533317666');
+  const channel = client.channels.cache.get(config.channels.defaultTchatting);
   if (channel) {
     console.log('Bonjour !');
   } else {
     console.error('Channel not found!');
   }
 
-  sendButtons(client); 
+  await sendButtons(client); 
 });
 
 client.on('interactionCreate', async (interaction: Interaction) => {
@@ -45,6 +46,9 @@ client.on('interactionCreate', async (interaction: Interaction) => {
   }
 
   switch(interaction.customId) {
+    case 'close':
+      await closeTicket(interaction);
+      break;
     case 'complaint': 
       await createTicket('plainte-', interaction);
       break;
