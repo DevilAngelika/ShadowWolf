@@ -6,6 +6,7 @@
     "@eslint/js": "^9.31.0",
     "eslint": "^9.31.0",
     "husky": "^9.1.7",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2"
   },
   "license": "UNLICENSED",
@@ -17,9 +18,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run tsc --noEmit",
-      "npm run format",
-      "git add"
+      "eslint",
+      "prettier --write"
     ]
   }
 }
