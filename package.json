@@ -13,7 +13,6 @@
   "scripts": {
     "start": "node index.ts",
     "prepare": "husky",
-    "tsc": "tsc",
     "format": "prettier --write ."
   },
   "lint-staged": {
