@@ -1,13 +1,13 @@
 interface ChannelConfig {
-    defaultTchatting: string;
-    ticketId: string;
+  defaultTchatting: string;
+  ticketId: string;
 }
 
 interface AclConfig {
-    admin: string;
+  admin: string;
 }
 
 export interface BotConfig {
-    acl: AclConfig;
-    channels: ChannelConfig;
+  acl: AclConfig;
+  channels: ChannelConfig;
 }

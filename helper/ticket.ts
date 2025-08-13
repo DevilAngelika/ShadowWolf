@@ -1,44 +1,56 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ColorResolvable, Colors, GuildMember, GuildMemberRoleManager, Interaction, MessageFlags, PermissionsBitField } from "discord.js";
-import { config } from "../config";
-import { createEmbed } from "./embed";
-import { createButton } from "./button";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  ColorResolvable,
+  Colors,
+  GuildMember,
+  GuildMemberRoleManager,
+  Interaction,
+  MessageFlags,
+  PermissionsBitField,
+} from 'discord.js';
+import { config } from '../config';
+import { createEmbed } from './embed';
+import { createButton } from './button';
 
 export async function createTicket(name: string, interaction: Interaction) {
-    const username: string = interaction.user.username;
-    const channelName = `${name}${username}`;
+  const username: string = interaction.user.username;
+  const channelName = `${name}${username}`;
 
-    const ticketChannel = await interaction.guild?.channels.create({
-        name: channelName,
-        type: ChannelType.GuildText,
-        parent: config.channels.ticketId,
-        permissionOverwrites: [
-            {
-                id: interaction.guild.roles.everyone,
-                deny: [PermissionsBitField.Flags.ViewChannel]
-            },
-            {
-                id: interaction.user.id,
-                allow: [
-                PermissionsBitField.Flags.ViewChannel,
-                PermissionsBitField.Flags.SendMessages,
-                PermissionsBitField.Flags.AttachFiles,
-                PermissionsBitField.Flags.EmbedLinks,
-                PermissionsBitField.Flags.ReadMessageHistory
-                ]
-            },
-            {
-                id: config.acl.admin,
-                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
-            }
-        ]
-    });
+  const ticketChannel = await interaction.guild?.channels.create({
+    name: channelName,
+    type: ChannelType.GuildText,
+    parent: config.channels.ticketId,
+    permissionOverwrites: [
+      {
+        id: interaction.guild.roles.everyone,
+        deny: [PermissionsBitField.Flags.ViewChannel],
+      },
+      {
+        id: interaction.user.id,
+        allow: [
+          PermissionsBitField.Flags.ViewChannel,
+          PermissionsBitField.Flags.SendMessages,
+          PermissionsBitField.Flags.AttachFiles,
+          PermissionsBitField.Flags.EmbedLinks,
+          PermissionsBitField.Flags.ReadMessageHistory,
+        ],
+      },
+      {
+        id: config.acl.admin,
+        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      },
+    ],
+  });
 
-    let description: string = '';
-    let colorEmbed: ColorResolvable = Colors.Blue;
+  let description: string = '';
+  let colorEmbed: ColorResolvable = Colors.Blue;
 
-    switch (name) {
-        case 'plainte-':
-            description = `Salut <@${interaction.user.id}> ! ⚠️
+  switch (name) {
+    case 'plainte-':
+      description = `Salut <@${interaction.user.id}> ! ⚠️
             Tu as ouvert un ticket pour signaler un problème ou déposer une plainte.
 
             Pour que nous puissions traiter ta demande le plus efficacement possible :
@@ -50,10 +62,10 @@ export async function createTicket(name: string, interaction: Interaction) {
             Nous t'invitons à donner le plus de détails possible ici. 
             Notre équipe examinera attentivement les informations que tu as fournies et agira en conséquence.
             Nous sommes désolée pour ceci.`;
-            colorEmbed = Colors.Red;
-            break;
-        case 'membre-': 
-            description = `Salut et bienvenue <@${interaction.user.id}> ! 👋
+      colorEmbed = Colors.Red;
+      break;
+    case 'membre-':
+      description = `Salut et bienvenue <@${interaction.user.id}> ! 👋
                 Tu as ouvert un ticket pour devenir membre du serveur.
                 Voici ce que cela signifie :
 
@@ -61,11 +73,11 @@ export async function createTicket(name: string, interaction: Interaction) {
                 🎶 Musique – 🎮 Gaming – ✍️ Écriture – 💬 Discussions générales...
 
                 🚫 L’accès à la section "Contenu adulte / Pornographique" n’est pas inclus avec le rôle de membre.
-                Cette partie est réservée à un processus séparé avec vérification et accord spécifique.`
-                colorEmbed = Colors.Green;
-            break;
-        default: 
-            description = `Salut <@${interaction.user.id}> ! 👋
+                Cette partie est réservée à un processus séparé avec vérification et accord spécifique.`;
+      colorEmbed = Colors.Green;
+      break;
+    default:
+      description = `Salut <@${interaction.user.id}> ! 👋
             Ton ticket a bien été ouvert.
 
             Pour que notre équipe puisse t'aider au mieux, merci de nous donner plus d'informations ici :
@@ -75,47 +87,60 @@ export async function createTicket(name: string, interaction: Interaction) {
 
             Un membre de l'équipe prendra connaissance de ton message et te répondra dans les plus brefs délais. 
             Merci de ta patience !`;
-    }
-    
-    const ticketEmbed = createEmbed(channelName, description, colorEmbed);
+  }
 
-    const closeTicket: ButtonBuilder = createButton('close', 'Fermer le ticket', ButtonStyle.Danger);
+  const ticketEmbed = createEmbed(channelName, description, colorEmbed);
 
-    const rowAction = new ActionRowBuilder<ButtonBuilder>().addComponents(closeTicket);
-    
-    await ticketChannel?.send({
-        content: `<@${interaction.user.id}> <@&${config.acl.admin}>`,
-        embeds: [ticketEmbed],
-        components: [rowAction]
-    });
-};
+  const closeTicketButton: ButtonBuilder = createButton(
+    'close',
+    'Fermer le ticket',
+    ButtonStyle.Danger
+  );
+
+  const rowAction = new ActionRowBuilder<ButtonBuilder>().addComponents(closeTicketButton);
+
+  await ticketChannel?.send({
+    content: `<@${interaction.user.id}> <@&${config.acl.admin}>`,
+    embeds: [ticketEmbed],
+    components: [rowAction],
+  });
+}
 
 export async function closeTicket(interaction: Interaction) {
-    if (!interaction.isRepliable()) {
-        return;
-    }
+  if (!interaction.isRepliable()) {
+    return;
+  }
 
-    if (!interaction.member || !(interaction.member instanceof GuildMember)) {
-        return interaction.reply({ content: "Une erreur est survenue lors de la récupération de vos permissions.", flags: MessageFlags.Ephemeral });
-    }
+  if (!interaction.member || !(interaction.member instanceof GuildMember)) {
+    return interaction.reply({
+      content: 'Une erreur est survenue lors de la récupération de vos permissions.',
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 
-    if (!(interaction.member.roles instanceof GuildMemberRoleManager)) {
-        return interaction.reply({ content: "Une erreur est survenue lors de la vérification des permissions.", flags: MessageFlags.Ephemeral });
-    }
+  if (!(interaction.member.roles instanceof GuildMemberRoleManager)) {
+    return interaction.reply({
+      content: 'Une erreur est survenue lors de la vérification des permissions.',
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 
-    if (!interaction.member.roles.cache.has(config.acl.admin)) {
-        return interaction.reply({ content: "Vous n'avez pas la permission de fermer ce ticket.", flags: MessageFlags.Ephemeral });
-    }
+  if (!interaction.member.roles.cache.has(config.acl.admin)) {
+    return interaction.reply({
+      content: "Vous n'avez pas la permission de fermer ce ticket.",
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 
-    const channel = interaction.channel;
-    if (channel) {
-        await interaction.reply("Ce ticket sera fermé dans 5 secondes…");
-        setTimeout(async () => {
-            try {
-                await channel.delete();
-            } catch (err) {
-                console.error("Erreur de suppression du canal :", err);
-            }
-        }, 5000);
-    }
+  const channel = interaction.channel;
+  if (channel) {
+    await interaction.reply('Ce ticket sera fermé dans 5 secondes…');
+    setTimeout(async () => {
+      try {
+        await channel.delete();
+      } catch (err) {
+        console.error('Erreur de suppression du canal :', err);
+      }
+    }, 5000);
+  }
 }
