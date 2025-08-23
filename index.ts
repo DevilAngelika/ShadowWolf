@@ -5,7 +5,7 @@ import { config } from './config';
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
-const client = new Client({
+const client: any = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -13,7 +13,7 @@ const client = new Client({
   ],
 });
 
-client.once('ready', async () => {
+client.once('ready', async (): Promise<void> => {
   console.log(`Logged in as ${client.user.tag}`);
 
   const channel = client.channels.cache.get(config.channels.defaultTchatting);
@@ -26,7 +26,7 @@ client.once('ready', async () => {
   await sendButtons(client);
 });
 
-client.on('interactionCreate', async (interaction: Interaction) => {
+client.on('interactionCreate', async (interaction: Interaction): Promise<void> => {
   if (interaction.isChatInputCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) {
@@ -68,7 +68,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
       await createTicket('suggestion-', interaction);
       break;
     default:
-      return await interaction.reply({
+      await interaction.reply({
         content: `Bouton ${interaction.customId} non pris en compte actuellement. Merci de contacter 𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶`,
         flags: MessageFlags.Ephemeral,
       });

@@ -3,7 +3,7 @@ import { config } from '../config';
 import { createButton } from '../helper/button';
 import { createEmbed } from '../helper/embed';
 
-export async function sendButtons(client: Client) {
+export async function sendButtons(client: Client): Promise<void> {
   const complaintTicketing: ButtonBuilder = createButton(
     'complaint',
     'Déposer une plainte',
@@ -42,7 +42,7 @@ export async function sendButtons(client: Client) {
   }
 }
 
-async function cleanTicketingChannel(channel: TextChannel) {
+async function cleanTicketingChannel(channel: TextChannel): Promise<void> {
   try {
     const fetchedMessages = await channel.messages.fetch({ limit: 100 });
 

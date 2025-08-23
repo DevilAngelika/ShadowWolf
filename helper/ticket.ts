@@ -5,11 +5,14 @@ import {
   ChannelType,
   ColorResolvable,
   Colors,
+  EmbedBuilder,
   GuildMember,
   GuildMemberRoleManager,
   Interaction,
   MessageFlags,
   PermissionsBitField,
+  TextBasedChannel,
+  TextChannel,
 } from 'discord.js';
 import { config } from '../config';
 import { createEmbed } from './embed';
@@ -17,9 +20,9 @@ import { createButton } from './button';
 
 export async function createTicket(name: string, interaction: Interaction) {
   const username: string = interaction.user.username;
-  const channelName = `${name}${username}`;
+  const channelName: string = `${name}${username}`;
 
-  const ticketChannel = await interaction.guild?.channels.create({
+  const ticketChannel: TextChannel | undefined = await interaction.guild?.channels.create({
     name: channelName,
     type: ChannelType.GuildText,
     parent: config.channels.ticketId,
@@ -89,7 +92,7 @@ export async function createTicket(name: string, interaction: Interaction) {
             Merci de ta patience !`;
   }
 
-  const ticketEmbed = createEmbed(channelName, description, colorEmbed);
+  const ticketEmbed: EmbedBuilder = createEmbed(channelName, description, colorEmbed);
 
   const closeTicketButton: ButtonBuilder = createButton(
     'close',
@@ -97,7 +100,8 @@ export async function createTicket(name: string, interaction: Interaction) {
     ButtonStyle.Danger
   );
 
-  const rowAction = new ActionRowBuilder<ButtonBuilder>().addComponents(closeTicketButton);
+  const rowAction: ActionRowBuilder<ButtonBuilder> =
+    new ActionRowBuilder<ButtonBuilder>().addComponents(closeTicketButton);
 
   await ticketChannel?.send({
     content: `<@${interaction.user.id}> <@&${config.acl.admin}>`,
@@ -132,15 +136,17 @@ export async function closeTicket(interaction: Interaction) {
     });
   }
 
-  const channel = interaction.channel;
-  if (channel) {
-    await interaction.reply('Ce ticket sera fermé dans 5 secondes…');
-    setTimeout(async () => {
-      try {
-        await channel.delete();
-      } catch (err) {
-        console.error('Erreur de suppression du canal :', err);
-      }
-    }, 5000);
+  const channel: TextBasedChannel | null = interaction.channel;
+  if (channel === null) {
+    return;
   }
+
+  await interaction.reply('Ce ticket sera fermé dans 5 secondes…');
+  setTimeout(async () => {
+    try {
+      await channel.delete();
+    } catch (err) {
+      console.error('Erreur de suppression du canal :', err);
+    }
+  }, 5000);
 }

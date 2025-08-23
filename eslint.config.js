@@ -48,6 +48,10 @@ module.exports = [
       'no-undef': 'off',
       'object-curly-spacing': ['error', 'always'],
       'prefer-const': 'error',
+      "prettier/prettier": [
+        "error",
+        { endOfLine: "auto" }
+      ],
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
       'space-before-blocks': 'error',
