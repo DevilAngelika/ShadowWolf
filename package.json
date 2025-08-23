@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "discord.js": "^14.21.0"
+    "discord.js": "^14.21.0",
+    "typescript": "^5.9.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
@@ -10,8 +11,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.2"
+    "prettier": "^3.6.2"
   },
   "license": "UNLICENSED",
   "scripts": {
