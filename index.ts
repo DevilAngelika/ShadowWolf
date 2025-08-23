@@ -82,9 +82,9 @@ const appExpress = express();
 const port: Number = 3000;
 
 appExpress.get('/', (req: Request, res: Response) => {
-  res.send(`${client.user.tag} est toujours debout`);
+  res.send(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 est toujours debout`);
 });
 
 appExpress.listen(port, () => {
-  console.log(`${client.user.tag} se reveille`);
+  console.log(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 se reveille`);
 });
