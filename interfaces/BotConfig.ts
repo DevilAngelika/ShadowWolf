@@ -3,6 +3,10 @@ interface ChannelConfig {
   ticketId: string;
 }
 
+interface SectionConfig {
+  ticketId: string;
+}
+
 interface AclConfig {
   admin: string;
 }
@@ -10,4 +14,5 @@ interface AclConfig {
 export interface BotConfig {
   acl: AclConfig;
   channels: ChannelConfig;
+  sections: SectionConfig;
 }

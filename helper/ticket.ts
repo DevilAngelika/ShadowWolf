@@ -25,7 +25,7 @@ export async function createTicket(name: string, interaction: Interaction) {
   const ticketChannel: TextChannel | undefined = await interaction.guild?.channels.create({
     name: channelName,
     type: ChannelType.GuildText,
-    parent: config.channels.ticketId,
+    parent: config.sections.ticketId,
     permissionOverwrites: [
       {
         id: interaction.guild.roles.everyone,

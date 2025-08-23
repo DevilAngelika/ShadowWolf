@@ -8,4 +8,7 @@ export const config: BotConfig = {
     defaultTchatting: '1354022484533317666',
     ticketId: '1354507540045758655',
   },
+  sections: {
+    ticketId: '1354112805615177803',
+  },
 };
