@@ -2,7 +2,7 @@ import { Interaction, MessageFlags } from 'discord.js';
 import { sendButtons } from './integrations/primary';
 import { closeTicket, createTicket } from './helper/ticket';
 import { config } from './config';
-const express = require('express');
+import express, { Request, Response } from 'express';
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
@@ -81,7 +81,7 @@ client.login(process.env.DISCORD_TOKEN);
 const appExpress = express();
 const port: Number = 3000;
 
-appExpress.get('/', (req, res) => {
+appExpress.get('/', (req: Request, res: Response) => {
   res.send(`${client.user.tag} est toujours debout`);
 });
 
