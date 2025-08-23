@@ -58,7 +58,7 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
     case 'complaint':
       await createTicket('plainte-', interaction);
       break;
-    case 'new-membre':
+    case 'new-member':
       await createTicket('membre-', interaction);
       break;
     case 'other':
