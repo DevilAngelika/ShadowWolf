@@ -22,7 +22,11 @@ export async function createTicket(name: string, interaction: Interaction) {
   const username: string = interaction.user.username;
   const channelName: string = `${name}${username}`;
 
-  const ticketChannel: TextChannel | undefined = await interaction.guild?.channels.create({
+  if (!interaction.guild) {
+    throw new Error(`Guild not found when we want create ticket`);
+  }
+
+  const ticketChannel: TextChannel = await interaction.guild.channels.create({
     name: channelName,
     type: ChannelType.GuildText,
     parent: config.sections.ticketId,
@@ -103,10 +107,19 @@ export async function createTicket(name: string, interaction: Interaction) {
   const rowAction: ActionRowBuilder<ButtonBuilder> =
     new ActionRowBuilder<ButtonBuilder>().addComponents(closeTicketButton);
 
-  await ticketChannel?.send({
+  await ticketChannel.send({
     content: `<@${interaction.user.id}> <@&${config.acl.admin}>`,
     embeds: [ticketEmbed],
     components: [rowAction],
+  });
+
+  if (!interaction.isRepliable()) {
+    return;
+  }
+
+  interaction.reply({
+    content: `Votre ticket pour **${channelName}** a été créé : <#${ticketChannel.id}>`,
+    flags: MessageFlags.Ephemeral,
   });
 }
 
