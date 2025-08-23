@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "discord.js": "^14.21.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
@@ -15,7 +16,7 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node index.ts",
+    "start": "ts-node index.ts",
     "prepare": "husky",
     "format": "prettier --write ."
   },
