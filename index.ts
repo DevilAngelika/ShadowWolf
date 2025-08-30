@@ -1,10 +1,8 @@
-import { Interaction, MessageFlags } from 'discord.js';
+import { Interaction, MessageFlags, Client, GatewayIntentBits } from 'discord.js';
 import { sendButtons } from './integrations/primary';
 import { closeTicket, createTicket } from './helper/ticket';
 import { config } from './config';
 import express, { Request, Response } from 'express';
-
-const { Client, GatewayIntentBits } = require('discord.js');
 
 const client: any = new Client({
   intents: [
@@ -70,7 +68,7 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
       break;
     default:
       await interaction.reply({
-        content: `Bouton ${interaction.customId} non pris en compte actuellement. Merci de contacter 𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶`,
+        content: `Bouton ${interaction.customId} non pris en compte actuellement. Merci de contacter ${config.names.devilangelika}`,
         flags: MessageFlags.Ephemeral,
       });
   }
@@ -82,9 +80,9 @@ const appExpress = express();
 const port: Number = 3000;
 
 appExpress.get('/', (req: Request, res: Response) => {
-  res.send(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 est toujours debout`);
+  res.send(`${config.names.shadowwolf} est toujours debout`);
 });
 
 appExpress.listen(port, () => {
-  console.log(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 se reveille`);
+  console.log(`${config.names.shadowwolf} se reveille`);
 });
