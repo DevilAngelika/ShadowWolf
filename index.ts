@@ -1,10 +1,10 @@
-import { Interaction, MessageFlags } from 'discord.js';
+import { Interaction, MessageFlags, Client, GatewayIntentBits, Collection } from 'discord.js';
 import { sendButtons } from './integrations/primary';
 import { closeTicket, createTicket } from './helper/ticket';
 import { config } from './config';
 import express, { Request, Response } from 'express';
-
-const { Client, GatewayIntentBits } = require('discord.js');
+import { readdirSync } from 'fs';
+import path from 'path';
 
 const client: any = new Client({
   intents: [
@@ -13,6 +13,31 @@ const client: any = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
+
+client.commands = new Collection<string, any>();
+
+// Load commands
+const commandsPath = path.join(__dirname, 'commands');
+
+function loadCommands(dir: string) {
+  const files = readdirSync(dir, { withFileTypes: true });
+
+  for (const file of files) {
+    const filePath = path.join(dir, file.name);
+
+    if (file.name.endsWith('.ts')) {
+      import(filePath).then((cmdModule) => {
+        const command = cmdModule.default;
+        if (command && command.data && command.execute) {
+          client.commands.set(command.data.name, command);
+          console.log(`✅ Loaded command: ${command.data.name}`);
+        }
+      });
+    }
+  }
+}
+
+loadCommands(commandsPath);
 
 client.once('ready', async (): Promise<void> => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -70,7 +95,7 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
       break;
     default:
       await interaction.reply({
-        content: `Bouton ${interaction.customId} non pris en compte actuellement. Merci de contacter 𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶`,
+        content: `Bouton ${interaction.customId} non pris en compte actuellement. Merci de contacter ${config.names.devilangelika}`,
         flags: MessageFlags.Ephemeral,
       });
   }
@@ -82,9 +107,9 @@ const appExpress = express();
 const port: Number = 3000;
 
 appExpress.get('/', (req: Request, res: Response) => {
-  res.send(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 est toujours debout`);
+  res.send(`${config.names.shadowwolf} est toujours debout`);
 });
 
 appExpress.listen(port, () => {
-  console.log(`𝒮𝒽𝒶𝒹𝑜𝓌𝒲𝑜𝓁𝒻 se reveille`);
+  console.log(`${config.names.shadowwolf} se reveille`);
 });

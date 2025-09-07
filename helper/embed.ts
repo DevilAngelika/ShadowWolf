@@ -3,7 +3,14 @@ import { ColorResolvable, EmbedBuilder } from 'discord.js';
 export function createEmbed(
   title: string,
   description: string,
-  color: ColorResolvable = 'Blue'
+  color: ColorResolvable = 'Blue',
+  image: string | null = null
 ): EmbedBuilder {
-  return new EmbedBuilder().setTitle(title).setDescription(description).setColor(color);
+  const embed = new EmbedBuilder().setTitle(title).setDescription(description).setColor(color);
+
+  if (image) {
+    embed.setImage(image);
+  }
+
+  return embed;
 }
