@@ -1,6 +1,7 @@
 import {
   ChatInputCommandInteraction,
   Colors,
+  GuildMember,
   MessageFlags,
   SlashCommandBuilder,
   SlashCommandStringOption,
@@ -8,6 +9,8 @@ import {
 import { config } from '../config';
 import { createEmbed } from '../helper/embed';
 import { getChannel } from '../helper/channel';
+
+const allowedRoles = [config.acl.admin, config.acl.streaming];
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,12 +29,14 @@ module.exports = {
     }),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    if (interaction.member?.roles) {
-      console.error(`User ${interaction.member.user.username} should not use /live command !`);
-      return interaction.reply({
-        content: `🚫 Vous ne pouvez pas executer la commande suivante. Si vous devriez y avoir, merci d'ouvrir un ticket`,
-        flags: MessageFlags.Ephemeral,
-      });
+    if (interaction.member instanceof GuildMember) {
+      if (!interaction.member.roles.cache.some((role) => allowedRoles.includes(role.id))) {
+        console.error(`User ${interaction.member.user.username} should not use /live command!`);
+        return interaction.reply({
+          content: `🚫 Vous ne pouvez pas exécuter la commande suivante. Si vous pensez que c'est une erreur, merci d'ouvrir un ticket.`,
+          flags: MessageFlags.Ephemeral,
+        });
+      }
     }
 
     try {
