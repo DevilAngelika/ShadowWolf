@@ -1,8 +1,10 @@
-import { Interaction, MessageFlags, Client, GatewayIntentBits } from 'discord.js';
+import { Interaction, MessageFlags, Client, GatewayIntentBits, Collection } from 'discord.js';
 import { sendButtons } from './integrations/primary';
 import { closeTicket, createTicket } from './helper/ticket';
 import { config } from './config';
 import express, { Request, Response } from 'express';
+import { readdirSync } from 'fs';
+import path from 'path';
 
 const client: any = new Client({
   intents: [
@@ -11,6 +13,31 @@ const client: any = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
+
+client.commands = new Collection<string, any>();
+
+// Load commands
+const commandsPath = path.join(__dirname, 'commands');
+
+function loadCommands(dir: string) {
+  const files = readdirSync(dir, { withFileTypes: true });
+
+  for (const file of files) {
+    const filePath = path.join(dir, file.name);
+
+    if (file.name.endsWith('.ts')) {
+      import(filePath).then((cmdModule) => {
+        const command = cmdModule.default;
+        if (command && command.data && command.execute) {
+          client.commands.set(command.data.name, command);
+          console.log(`✅ Loaded command: ${command.data.name}`);
+        }
+      });
+    }
+  }
+}
+
+loadCommands(commandsPath);
 
 client.once('ready', async (): Promise<void> => {
   console.log(`Logged in as ${client.user.tag}`);

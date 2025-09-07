@@ -43,15 +43,21 @@ module.exports = {
       
       Venez la rejoindre et la suivre dans ses aventures:
       `;
-      let image: string | null = null;
       const title: string = `C'est l'heure du live`;
 
       switch (streaming) {
         case 'devilangelika':
-          description = `𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶 ${baseDescription} https://www.twitch.tv/devilangelika `;
-          image = '';
+          description = `𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶 ${baseDescription} 
+          https://www.twitch.tv/devilangelika `;
           break;
         case 'mi':
+          description = `Salut toi ! 
+          
+          Je t'invite à venir me faire un petit coucou sur mon live juste ici !
+          Au plaisir de t'y voir !!
+          
+          https://www.twitch.tv/miission2567
+          `;
           break;
         case 'mi-devil':
           description = `Mi et 𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶 sont en live toutes les deux !! 
@@ -61,7 +67,7 @@ module.exports = {
           break;
       }
 
-      const embed = createEmbed(title, description, Colors.Purple, image);
+      const embed = createEmbed(title, description, Colors.Purple);
 
       const channel = getChannel(interaction, config.channels.liveId);
 
