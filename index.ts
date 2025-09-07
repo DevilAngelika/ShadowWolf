@@ -1,4 +1,12 @@
-import { Interaction, MessageFlags, Client, GatewayIntentBits, Collection } from 'discord.js';
+import {
+  Interaction,
+  MessageFlags,
+  Client,
+  GatewayIntentBits,
+  Collection,
+  REST,
+  Routes,
+} from 'discord.js';
 import { sendButtons } from './integrations/primary';
 import { closeTicket, createTicket } from './helper/ticket';
 import { config } from './config';
@@ -15,29 +23,29 @@ const client: any = new Client({
 });
 
 client.commands = new Collection<string, any>();
+const commands: any[] = [];
 
-// Load commands
 const commandsPath = path.join(__dirname, 'commands');
 
-function loadCommands(dir: string) {
+async function loadCommands(dir: string) {
   const files = readdirSync(dir, { withFileTypes: true });
 
   for (const file of files) {
     const filePath = path.join(dir, file.name);
 
-    if (file.name.endsWith('.ts')) {
-      import(filePath).then((cmdModule) => {
-        const command = cmdModule.default;
-        if (command && command.data && command.execute) {
-          client.commands.set(command.data.name, command);
-          console.log(`✅ Loaded command: ${command.data.name}`);
-        }
-      });
+    if (file.name.endsWith('.ts') || file.name.endsWith('.js')) {
+      const cmdModule = await import(filePath);
+      const command = cmdModule.default;
+      if (command && command.data && command.execute) {
+        client.commands.set(command.data.name, command);
+        commands.push(command.data.toJSON());
+        console.log(`✅ Loaded command: ${command.data.name}`);
+      }
     }
   }
 }
 
-loadCommands(commandsPath);
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN!);
 
 client.once('ready', async (): Promise<void> => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -63,7 +71,12 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
       await command.execute(interaction);
     } catch (error) {
       console.error(`Erreur during command's execution ${interaction.commandName} :`, error);
-      if (!interaction.replied) {
+      if (interaction.deferred || interaction.replied) {
+        await interaction.followUp({
+          content: '❌ Une erreur est survenue.',
+          flags: MessageFlags.Ephemeral,
+        });
+      } else {
         await interaction.reply({
           content: '❌ Une erreur est survenue.',
           flags: MessageFlags.Ephemeral,
@@ -101,7 +114,21 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
   }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+(async () => {
+  await loadCommands(commandsPath);
+
+  try {
+    console.log('⏳ Refreshing application commands...');
+    await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.GUILD_ID!), {
+      body: commands,
+    });
+    console.log('✅ Commands registered!');
+
+    client.login(process.env.DISCORD_TOKEN);
+  } catch (err) {
+    console.error(err);
+  }
+})();
 
 const appExpress = express();
 const port: Number = 3000;
