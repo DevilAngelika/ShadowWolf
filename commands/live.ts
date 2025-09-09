@@ -92,7 +92,7 @@ module.exports = {
         throw new Error(`Channel ${config.channels.liveId} was not found`);
       }
 
-      channel.send({ embeds: [embed], files: attachment });
+      return await channel.send({ embeds: [embed], files: attachment });
     } catch (error: unknown) {
       let message = 'An unknown error occurred.';
 
