@@ -1,4 +1,5 @@
 import {
+  AttachmentBuilder,
   ChatInputCommandInteraction,
   Colors,
   GuildMember,
@@ -9,6 +10,8 @@ import {
 import { config } from '../config';
 import { createEmbed } from '../helper/embed';
 import { getChannel } from '../helper/channel';
+import { createAttachment } from '../helper/attachment';
+import path from 'path';
 
 const allowedRoles = [config.acl.admin, config.acl.streaming];
 
@@ -44,6 +47,8 @@ module.exports = {
 
       let description: string = '';
 
+      let imageName: string | null = null;
+
       const baseDescription: string = `est en live !!!
       
       Venez la rejoindre et la suivre dans ses aventures:
@@ -63,6 +68,7 @@ module.exports = {
           
           https://www.twitch.tv/miission2567
           `;
+          imageName = 'mi-live.png';
           break;
         case 'mi-devil':
           description = `Mi et 𝒟𝑒𝓋𝒾𝓁♡𝒜𝓃𝑔𝑒𝓁𝒾𝓀𝒶 sont en live toutes les deux !! 
@@ -72,7 +78,13 @@ module.exports = {
           break;
       }
 
-      const embed = createEmbed(title, description, Colors.Purple);
+      const embed = createEmbed(title, description, Colors.Purple, imageName);
+      let attachment: Array<AttachmentBuilder> | undefined = undefined;
+
+      if (imageName) {
+        const imagePath = path.join(process.cwd(), 'images', 'live', imageName);
+        attachment = [createAttachment(imagePath, imageName)];
+      }
 
       const channel = getChannel(interaction, config.channels.liveId);
 
@@ -80,7 +92,7 @@ module.exports = {
         throw new Error(`Channel ${config.channels.liveId} was not found`);
       }
 
-      channel.send({ embeds: [embed] });
+      channel.send({ embeds: [embed], files: attachment });
     } catch (error: unknown) {
       let message = 'An unknown error occurred.';
 
