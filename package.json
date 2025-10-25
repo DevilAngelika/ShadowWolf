@@ -10,19 +10,23 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
+    "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
-    "prettier": "^3.6.2"
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.5"
   },
   "license": "UNLICENSED",
   "scripts": {
     "start": "ts-node index.ts",
     "prepare": "husky",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "lint-staged": {
     "*.ts": [
