@@ -1,0 +1,36 @@
+name: 🧪 Test and Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Validate Build
+
+    steps:
+      - name: 🛒 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟩 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: 🧹 Lint
+        run: yarn eslint . --ext .ts
+
+      - name: 🧱 Type Check
+        run: yarn tsc --noEmit
+
+      - name: 🧪 Run Tests
+        run: yarn test --ci --colors
