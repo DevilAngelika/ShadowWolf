@@ -17,10 +17,10 @@ module.exports = {
     .setName('ban')
     .setDescription('Bannir un membre')
     .addUserOption((option): SlashCommandUserOption => {
-      return option.setName('membre').setRequired(true);
+      return option.setName('membre').setDescription('Membre à bannir').setRequired(true);
     })
     .addStringOption((option): SlashCommandStringOption => {
-      return option.setName('motif').setRequired(false);
+      return option.setName('motif').setDescription('Motif du ban').setRequired(false);
     })
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
