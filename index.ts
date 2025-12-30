@@ -133,7 +133,7 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
 const appExpress = express();
 const port: Number = 3000;
 
-appExpress.use('/images', express.static(path.join(__dirname, '../images')));
+appExpress.use('/images', express.static(path.join(__dirname, './images')));
 
 appExpress.get('/', (req: Request, res: Response) => {
   res.send(`${config.names.shadowwolf} est toujours debout`);
