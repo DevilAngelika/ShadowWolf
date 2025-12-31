@@ -4,6 +4,14 @@ import { createButton } from '../helper/button';
 import { createEmbed } from '../helper/embed';
 
 export async function sendButtons(client: Client): Promise<void> {
+  const ticketingChannel = client.channels.cache.get(config.channels.ticketId) as TextChannel;
+  const messages = await ticketingChannel.messages.fetch({ limit: 1 });
+
+  if (messages.size > 0) {
+    console.log('✅ Ticket embed déjà présent, pas de renvoi nécessaire.');
+    return;
+  }
+
   const complaintTicketing: ButtonBuilder = createButton(
     'complaint',
     'Déposer une plainte',
@@ -33,7 +41,6 @@ export async function sendButtons(client: Client): Promise<void> {
     'Sélectionnez une option pour ouvrir un ticket'
   );
 
-  const ticketingChannel = client.channels.cache.get(config.channels.ticketId) as TextChannel;
   if (ticketingChannel) {
     await cleanTicketingChannel(ticketingChannel);
     await ticketingChannel.send({ embeds: [embedTicketing], components: [row] });
